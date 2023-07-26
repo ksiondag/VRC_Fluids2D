@@ -411,6 +411,7 @@ MonoBehaviour:
   gradientSubtractMaterial: {fileID: 2100000, guid: df1473bf1f0febb4c9f367ee76d89341,
     type: 2}
   advectionMaterial: {fileID: 2100000, guid: 2aa7163ca89336f44846a67d75f20d5f, type: 2}
+  fluidsMaterial: {fileID: 2100000, guid: d4f131d75b5fee44fa1d439cd7b784ee, type: 2}
 --- !u!114 &219012754
 MonoBehaviour:
   m_ObjectHideFlags: 2

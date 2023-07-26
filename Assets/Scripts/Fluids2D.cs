@@ -16,14 +16,16 @@ public class Fluids2D : UdonSharpBehaviour
     private Config config;
 
     // Materials used for applying shaders (not sure how to apply shader without a material)
-    public Material splatMaterial;
-    public Material curlMaterial;
-    public Material vorticityMaterial;
-    public Material divergenceMaterial;
-    public Material clearMaterial;
-    public Material pressureMaterial;
-    public Material gradientSubtractMaterial;
-    public Material advectionMaterial;
+    public Material fluidsMaterial;
+
+    private int ADVECTION = 0;
+    private int CLEAR = 1;
+    private int CURL = 2;
+    private int DIVERGENCE = 3;
+    private int GRADIENT_SUBTRACT = 4;
+    private int PRESSURE = 5;
+    private int SPLAT = 6;
+    private int VORTICITY = 7;
 
     void Start()
     {
@@ -102,60 +104,67 @@ public class Fluids2D : UdonSharpBehaviour
 
     void Step(float dt)
     {
-        curlMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
-        curlMaterial.SetTexture("_MainTex", velocity.GetTexture());
-        curl.Blit(curlMaterial);
+        fluidsMaterial.SetInt("_Program", CURL);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetTexture("_MainTex", velocity.GetTexture());
+        curl.Blit(fluidsMaterial);
 
-        vorticityMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
-        vorticityMaterial.SetTexture("_MainTex", velocity.GetTexture());
-        vorticityMaterial.SetTexture("_CurlTex", curl.GetTexture());
-        vorticityMaterial.SetInt("_Curl", config.CURL);
-        vorticityMaterial.SetFloat("_DeltaTime", dt);
-        velocity.Blit(vorticityMaterial);
+        fluidsMaterial.SetInt("_Program", VORTICITY);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetTexture("_MainTex", velocity.GetTexture());
+        fluidsMaterial.SetTexture("_CalcTex", curl.GetTexture());
+        fluidsMaterial.SetInt("_Curl", config.CURL);
+        fluidsMaterial.SetFloat("_DeltaTime", dt);
+        velocity.Blit(fluidsMaterial);
         velocity.Swap();
 
-        divergenceMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
-        divergenceMaterial.SetTexture("_MainTex", velocity.GetTexture());
-        divergence.Blit(divergenceMaterial);
+        fluidsMaterial.SetInt("_Program", DIVERGENCE);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetTexture("_MainTex", velocity.GetTexture());
+        divergence.Blit(fluidsMaterial);
 
-        clearMaterial.SetTexture("_MainTex", pressure.GetTexture());
-        clearMaterial.SetFloat("_Value", config.PRESSURE);
-        pressure.Blit(clearMaterial);
+        fluidsMaterial.SetInt("_Program", CLEAR);
+        fluidsMaterial.SetTexture("_MainTex", pressure.GetTexture());
+        fluidsMaterial.SetFloat("_Value", config.PRESSURE);
+        pressure.Blit(fluidsMaterial);
         pressure.Swap();
 
-        pressureMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
-        pressureMaterial.SetTexture("_MainTex", divergence.GetTexture());
+        fluidsMaterial.SetInt("_Program", PRESSURE);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetTexture("_MainTex", divergence.GetTexture());
         for (int i = 0; i < config.PRESSURE_ITERATIONS; i++)
         {
-            pressureMaterial.SetTexture("_PressureTex", pressure.GetTexture());
-            pressure.Blit(pressureMaterial);
+            fluidsMaterial.SetTexture("_CalcTex", pressure.GetTexture());
+            pressure.Blit(fluidsMaterial);
             pressure.Swap();
         }
 
-        gradientSubtractMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
-        gradientSubtractMaterial.SetTexture("_MainTex", pressure.GetTexture());
-        gradientSubtractMaterial.SetTexture("_VelocityTex", velocity.GetTexture());
-        velocity.Blit(gradientSubtractMaterial);
+        fluidsMaterial.SetInt("_Program", GRADIENT_SUBTRACT);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetTexture("_MainTex", pressure.GetTexture());
+        fluidsMaterial.SetTexture("_CalcTex", velocity.GetTexture());
+        velocity.Blit(fluidsMaterial);
         velocity.Swap();
 
-        advectionMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
+        fluidsMaterial.SetInt("_Program", ADVECTION);
+        fluidsMaterial.SetVector("_TexelSize", velocity.GetTexelSize());
         // TODO: Not sure if I want to check for linear filtering support
         // if (!ext.supportLinearFiltering)
-        // advectionMaterial.SetVector("_DyeTexelSize", dye.GetTexelSize());        
-        advectionMaterial.SetTexture("_VelocityTex", velocity.GetTexture());
-        advectionMaterial.SetTexture("_MainTex", velocity.GetTexture());
-        advectionMaterial.SetFloat("_DeltaTime", dt);
-        advectionMaterial.SetFloat("_Dissipation", config.VELOCITY_DISSIPATION);
-        velocity.Blit(advectionMaterial);
+        // fluidsMaterial.SetVector("_DyeTexelSize", dye.GetTexelSize());        
+        fluidsMaterial.SetTexture("_CalcTex", velocity.GetTexture());
+        fluidsMaterial.SetTexture("_MainTex", velocity.GetTexture());
+        fluidsMaterial.SetFloat("_DeltaTime", dt);
+        fluidsMaterial.SetFloat("_Dissipation", config.VELOCITY_DISSIPATION);
+        velocity.Blit(fluidsMaterial);
         velocity.Swap();
 
         // TODO: Not sure if I want to check for linear filtering support
         // if (!ext.supportLinearFiltering)
-        // advectionMaterial.SetVector("_DyeTexelSize", dye.GetTexelSize());        
-        advectionMaterial.SetTexture("_VelocityTex", velocity.GetTexture());
-        advectionMaterial.SetTexture("_MainTex", dye.GetTexture());
-        advectionMaterial.SetFloat("_Dissipation", config.DENSITY_DISSIPATION);
-        dye.Blit(advectionMaterial);
+        // fluidsMaterial.SetVector("_DyeTexelSize", dye.GetTexelSize());        
+        fluidsMaterial.SetTexture("_CalcTex", velocity.GetTexture());
+        fluidsMaterial.SetTexture("_MainTex", dye.GetTexture());
+        fluidsMaterial.SetFloat("_Dissipation", config.DENSITY_DISSIPATION);
+        dye.Blit(fluidsMaterial);
         dye.Swap();
     }
 
@@ -185,21 +194,22 @@ public class Fluids2D : UdonSharpBehaviour
     {
         Vector2 forceDirection = force.normalized;
         float radius = config.SPLAT_RADIUS / 100f;
+        fluidsMaterial.SetInt("_Program", SPLAT);
         // Vector2 splatPosition = position + forceDirection * config.SPLAT_RADIUS;
-        splatMaterial.SetTexture("_MainTex", velocity.GetTexture());
+        fluidsMaterial.SetTexture("_MainTex", velocity.GetTexture());
         // TODO: I don't think aspect ratio should ever be non-1, but maybe handle it anyways?
-        splatMaterial.SetFloat("_AspectRatio", 1.0f);
-        splatMaterial.SetVector("_Point", new Vector4(position.x, position.y, 0, 0));
-        splatMaterial.SetVector("_Color", new Vector4(force.x, force.y, 0, 0));
-        splatMaterial.SetFloat("_Radius", radius);
-        velocity.Blit(splatMaterial);
+        fluidsMaterial.SetFloat("_AspectRatio", 1.0f);
+        fluidsMaterial.SetVector("_Point", new Vector4(position.x, position.y, 0, 0));
+        fluidsMaterial.SetVector("_Color", new Vector4(force.x, force.y, 0, 0));
+        fluidsMaterial.SetFloat("_Radius", radius);
+        velocity.Blit(fluidsMaterial);
         velocity.Swap();
 
-        splatMaterial.SetTexture("_MainTex", dye.GetTexture());
-        // splatMaterial.SetVector("_Point", new Vector4(splatPosition.x, splatPosition.y, 0, 0));
-        splatMaterial.SetVector("_Color", new Vector4(color.r, color.g, color.b, 0));
-        splatMaterial.SetFloat("_Radius", radius / 10f);
-        dye.Blit(splatMaterial);
+        fluidsMaterial.SetTexture("_MainTex", dye.GetTexture());
+        // fluidsMaterial.SetVector("_Point", new Vector4(splatPosition.x, splatPosition.y, 0, 0));
+        fluidsMaterial.SetVector("_Color", new Vector4(color.r, color.g, color.b, 0));
+        fluidsMaterial.SetFloat("_Radius", radius / 10f);
+        dye.Blit(fluidsMaterial);
         dye.Swap();
     }
 }
