@@ -66,11 +66,11 @@ Material:
     m_Floats:
     - _AspectRatio: 1
     - _BumpScale: 1
-    - _Curl: 30
+    - _Curl: 0
     - _Cutoff: 0.5
-    - _DeltaTime: 0.0111113
+    - _DeltaTime: 0.0111114
     - _DetailNormalMapScale: 1
-    - _Dissipation: 1
+    - _Dissipation: 0.5
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -79,7 +79,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Program: 0
+    - _Program: 7
     - _Radius: 0.00015
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -90,5 +90,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Point: {r: 0.42972973, g: 0.4443447, b: 0, a: 0}
+    - _Point: {r: 0.45045045, g: 0.489228, b: 0, a: 0}
     - _TexelSize: {r: 0.0078125, g: 0.0078125, b: 0, a: 0}

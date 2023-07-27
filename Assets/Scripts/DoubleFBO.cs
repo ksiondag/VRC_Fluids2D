@@ -4,7 +4,8 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-public class DoubleFBO : UdonSharpBehaviour {
+public class DoubleFBO : UdonSharpBehaviour
+{
 
     private RenderTexture readTexture;
     private RenderTexture writeTexture;
@@ -16,7 +17,8 @@ public class DoubleFBO : UdonSharpBehaviour {
 
     public MeshRenderer targetRenderer;
 
-    public void Initialize(int w, int h, RenderTextureFormat format) {
+    public void Initialize(int w, int h, RenderTextureFormat format)
+    {
         width = w;
         height = h;
         texelSizeX = 1.0f / width;
@@ -25,30 +27,36 @@ public class DoubleFBO : UdonSharpBehaviour {
         readTexture = new RenderTexture(width, height, 0, format);
         writeTexture = new RenderTexture(width, height, 0, format);
 
-        if (targetRenderer != null) {
+        if (targetRenderer != null)
+        {
             targetRenderer.material.mainTexture = readTexture;
         }
     }
 
-    public void Blit(Material shaderMaterial) {
-        VRCGraphics.Blit(null, writeTexture, shaderMaterial);
+    public void Blit(Material shaderMaterial, int pass)
+    {
+        VRCGraphics.Blit(null, writeTexture, shaderMaterial, pass);
     }
 
-    public void Swap() {
+    public void Swap()
+    {
         RenderTexture temp = readTexture;
         readTexture = writeTexture;
         writeTexture = temp;
 
-        if (targetRenderer != null) {
+        if (targetRenderer != null)
+        {
             targetRenderer.material.mainTexture = readTexture;
         }
     }
 
-    public Vector2 GetTexelSize() {
+    public Vector2 GetTexelSize()
+    {
         return new Vector2(texelSizeX, texelSizeY);
     }
 
-    public RenderTexture GetTexture() {
+    public RenderTexture GetTexture()
+    {
         return readTexture;
     }
 }

@@ -4,10 +4,11 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-public class FBO : UdonSharpBehaviour {
+public class FBO : UdonSharpBehaviour
+{
 
     private RenderTexture texture;
-    
+
     private int width;
     private int height;
     private float texelSizeX;
@@ -15,7 +16,8 @@ public class FBO : UdonSharpBehaviour {
 
     public MeshRenderer targetRenderer;
 
-    public void Initialize(int w, int h, RenderTextureFormat format) {
+    public void Initialize(int w, int h, RenderTextureFormat format)
+    {
         width = w;
         height = h;
         texelSizeX = 1.0f / width;
@@ -23,20 +25,24 @@ public class FBO : UdonSharpBehaviour {
 
         texture = new RenderTexture(width, height, 0, format);
 
-        if (targetRenderer != null) {
+        if (targetRenderer != null)
+        {
             targetRenderer.material.mainTexture = texture;
         }
     }
 
-    public void Blit(Material shaderMaterial) {
-        VRCGraphics.Blit(null, texture, shaderMaterial);
+    public void Blit(Material shaderMaterial, int pass)
+    {
+        VRCGraphics.Blit(null, texture, shaderMaterial, pass);
     }
 
-    public Vector2 GetTexelSize() {
+    public Vector2 GetTexelSize()
+    {
         return new Vector2(texelSizeX, texelSizeY);
     }
 
-    public RenderTexture GetTexture() {
+    public RenderTexture GetTexture()
+    {
         return texture;
     }
 }

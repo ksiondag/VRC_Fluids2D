@@ -332,11 +332,11 @@ MonoBehaviour:
   SIM_RESOLUTION: 128
   DYE_RESOLUTION: 1024
   CAPTURE_RESOLUTION: 512
-  DENSITY_DISSIPATION: 1
-  VELOCITY_DISSIPATION: 0.2
+  DENSITY_DISSIPATION: 0.5
+  VELOCITY_DISSIPATION: 2
   PRESSURE: 0.8
   PRESSURE_ITERATIONS: 20
-  CURL: 30
+  CURL: 0
   SPLAT_RADIUS: 0.15
   SPLAT_FORCE: 6000
   SHADING: 1
@@ -402,15 +402,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 219012752}
-  splatMaterial: {fileID: 2100000, guid: a23b4e46544971948a63891a3aad550b, type: 2}
-  curlMaterial: {fileID: 2100000, guid: b010f9a46b0a5bf408813cc2937962e8, type: 2}
-  vorticityMaterial: {fileID: 2100000, guid: 41aee27d2a44f024ea6573f284385001, type: 2}
-  divergenceMaterial: {fileID: 2100000, guid: 2bc4c5b941af5ab439d9360bc0bf54be, type: 2}
-  clearMaterial: {fileID: 2100000, guid: 70dc1092d0699674ea45f6cbeaefa678, type: 2}
-  pressureMaterial: {fileID: 2100000, guid: 48536706a4d18a14dbda99bb107937ec, type: 2}
-  gradientSubtractMaterial: {fileID: 2100000, guid: df1473bf1f0febb4c9f367ee76d89341,
-    type: 2}
-  advectionMaterial: {fileID: 2100000, guid: 2aa7163ca89336f44846a67d75f20d5f, type: 2}
   fluidsMaterial: {fileID: 2100000, guid: d4f131d75b5fee44fa1d439cd7b784ee, type: 2}
 --- !u!114 &219012754
 MonoBehaviour:
